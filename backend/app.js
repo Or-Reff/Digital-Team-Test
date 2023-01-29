@@ -1,6 +1,8 @@
 // imports
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require('cors');
+const enumState = require("./enums/state.ts");
 
 const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
@@ -18,60 +20,43 @@ mongoose
   .catch(() => {
     console.log("Connection failed!");
   });
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin,X-Requested-With, Content-Type, Accept"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin,X-Requested-With, Content-Type, Accept"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PATCH, DELETE, OPTIONS"
+//   );
+//   next();
+// });
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post("/api/posts", (req, res, next) => {
-  const stateModel = new StateModel({
-    title: req.body.title,
-    content: req.body.content,
-  });
-  stateModel.save().then((createdPost) => {
-    res.status(201).json({
-      message: "Post added successfuly!",
-      postId: createdPost._id,
-    });
-  });
-});
+// app.post("/api/defaultBoxes",)
 
+//Update Box State
 app.get("/api/state", async (req, res, next) => {
   const id = req.query.id; // $_GET["id"]
-
-  const state = await stateModel.updateOne(
+  let rand = Math.floor(Math.random() * Object.keys(enumState).length);
+  let randStateValue = enumState[Object.keys(enumState)[rand]];
+  const state = await stateModel.findOneAndUpdate(
     { id },
-    { state: "something something" },
+    { state: randStateValue },
     {
       upsert: true,
       multi: false,
     }
   );
-
-  // stateModel.find(id).then(documents => {
-  //       res.status(200).json({
-  //           message: "Posts fetched succesfully!",
-  //           posts: documents
-  //       });
-  //   })
+    res.send(state);
 });
 
-app.delete("/api/posts/:id", (req, res, next) => {
-  stateModel.deleteOne({ _id: req.params.id }).then((result) => {
-    console.log(result);
-  });
-  res.status(200).json({ message: "Post Deleted!" });
-});
 
 module.exports = app;
