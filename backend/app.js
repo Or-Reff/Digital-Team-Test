@@ -71,18 +71,21 @@ app.get("/api/alldata", async (req, res) => {
 });
 
 app.get("/api/data", async (req, res) => {
+  try{
   const data = await stateModel.find();
   console.log(data[0].state);
 
-  // const keys = Object.keys(enumState);
-  // const bulkOps = data.map((item) => ({
-  //   updateOne: {
-  //     filter: { id: item.id },
-  //     update: { $set: { state: keys[Math.floor(Math.random() * keys.length)] } }
+  // const id = req.query.id; // $_GET["id"]
+  // let rand = Math.floor(Math.random() * Object.keys(enumState).length);
+  // let randStateValue = enumState[Object.keys(enumState)[rand]];
+  // const state = await stateModel.findOneAndUpdate(
+  //   { id },
+  //   { state: randStateValue },
+  //   {
+  //     upsert: true,
+  //     multi: false,
   //   }
-  // }));
-
-  // await stateModel.bulkWrite(bulkOps);
+  // );
 
 
   //TODO update the mongoDB like previous method
@@ -96,6 +99,9 @@ app.get("/api/data", async (req, res) => {
 
   // Return data to the client
   res.json(data);
+}catch(ERROR){
+  res.sendStatus(400).json({message:'cannot fetch data'})
+}
 });
 
 module.exports = app;
