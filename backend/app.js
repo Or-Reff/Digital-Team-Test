@@ -3,11 +3,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const enumState = require("./enums/state.ts");
+const app = express();
+const io = require("socket.io")(http);
 
 const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
-
-const app = express();
 
 mongoose.set("strictQuery", false);
 mongoose
@@ -70,32 +70,37 @@ app.get("/api/alldata", async (req, res) => {
   }
 });
 
-app.get("/api/data", async (req, res) => {
-  const data = await stateModel.find();
-  console.log(data[0].state);
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
-  // const keys = Object.keys(enumState);
-  // const bulkOps = data.map((item) => ({
-  //   updateOne: {
-  //     filter: { id: item.id },
-  //     update: { $set: { state: keys[Math.floor(Math.random() * keys.length)] } }
-  //   }
-  // }));
+  app.get("/api/data", async (req, res) => {
+    const data = await stateModel.find();
+    console.log(data[0].state);
 
-  // await stateModel.bulkWrite(bulkOps);
+    // const keys = Object.keys(enumState);
+    // const bulkOps = data.map((item) => ({
+    //   updateOne: {
+    //     filter: { id: item.id },
+    //     update: { $set: { state: keys[Math.floor(Math.random() * keys.length)] } }
+    //   }
+    // }));
 
+    // await stateModel.bulkWrite(bulkOps);
 
-  //TODO update the mongoDB like previous method
+    //TODO update the mongoDB like previous method
 
-  data.forEach((item, index) => {
-    console.log(
-      `enumstate: ${enumState[data[index].state] || enumState.ERROR}`
-    );
-    data[index].state = data[index].state || enumState.ERROR;
+    data.forEach((item, index) => {
+      console.log(
+        `enumstate: ${enumState[data[index].state] || enumState.ERROR}`
+      );
+      data[index].state = data[index].state || enumState.ERROR;
+    });
+
+    // Emiting data real-time
+    io.emit('data', data);
+    // Return data to the client
+    res.json(data);
   });
-
-  // Return data to the client
-  res.json(data);
 });
 
 module.exports = app;

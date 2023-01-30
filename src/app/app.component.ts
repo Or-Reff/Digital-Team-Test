@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
+import { socket } from "socket.io-client";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ export class AppComponent {
   data: any = [];
   subscription!: Subscription;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private socket: Socket) {}
 
   ngOnInit() {
     /**Initiating */
@@ -28,6 +29,14 @@ export class AppComponent {
       console.log(counter);
       console.log(this.data);
       counter++;
+    });
+
+     // Listen to the 'data' event from the socket
+     this.subscription = this.socket.fromEvent('data').subscribe((data: any) => {
+      this.data = data.map((item: any, index: any) => ({
+        id: index,
+        state: item.state,
+      }));
     });
   }
   /**Fetching data to the UI*/
