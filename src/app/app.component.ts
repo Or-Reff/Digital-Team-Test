@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
+// import { LocalStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: 'app-root',
@@ -16,23 +17,41 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    let counter = 0;    // interval - every 0.5 seconds update UI
+    /** Check if the data is stored in localStorage
+     *  To maintain the state of the UI after disconnections
+     */
+    const data = localStorage.getItem('data');
+    if (data) {
+      this.data = JSON.parse(data);
+    }
+    /**Initiating */
+    this.fetchData();
+    let counter = 0; // interval - every 0.5 seconds update UI
     this.subscription = interval(500).subscribe(() => {
-      if (counter === 15) { //TODO change to 500 times
+      if (counter === 3) {
+        //TODO change to 500 times
         this.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
-      this.http.get('http://localhost:3000/api/data').subscribe((response: any) => {
-        this.data = response.map((item: any, index: any) => ({
-          id: index,
-          state: item.state,
-          color: this.getColor(item.state),
-        }));
-      });
+      this.fetchData();
       console.log(counter);
       console.log(this.data);
       counter++;
     });
+  }
+  /**Fetching data to the UI*/
+  fetchData() {
+    // retrieve data from the API and update the UI
+    this.http
+      .get('http://localhost:3000/api/data')
+      .subscribe((response: any) => {
+        this.data = response.map((item: any, index: any) => ({
+          id: index,
+          state: item.state,
+        }));
+        // Store the data in localStorage
+        localStorage.setItem('data', JSON.stringify(this.data));
+      });
   }
 
   ngOnDestroy() {
