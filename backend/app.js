@@ -1,7 +1,7 @@
 // imports
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require('cors');
+const cors = require("cors");
 const enumState = require("./enums/state.ts");
 
 const stateModel = require("./models/stateModel");
@@ -33,9 +33,11 @@ mongoose
 //   next();
 // });
 
-app.use(cors({
-  origin: '*'
-}));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,8 +57,33 @@ app.get("/api/state", async (req, res, next) => {
       multi: false,
     }
   );
-    res.send(state);
+  res.send(state);
 });
 
+// Route to get all the data from the database
+app.get('/api/alldata', async (req, res) => {
+  try {
+    const data = await stateModel.find();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get("/api/data", async(req, res) => {
+
+  const data = await stateModel.find();
+
+  // Update data every 0.5 second
+  setInterval(() => {
+    data.forEach((item, index) => {
+      data[index].state =
+        data[index].state === "KWS_KERIDOS" ? "KWS_KERIDOS_YG" : "KWS_KERIDOS";
+    });
+  }, 500);
+
+  // Return data to the client
+  res.json(data);
+});
 
 module.exports = app;

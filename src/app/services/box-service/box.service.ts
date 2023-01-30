@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -9,6 +9,15 @@ import { HttpHeaders } from '@angular/common/http';
 export class BoxService {
   constructor(private http: HttpClient) {}
 
+  public counter = new BehaviorSubject<number>(0);
+  // public counter$ = this.counter.asObservable();
+
+  public getCounter(): Number {
+    return this.counter.value;
+  }
+  public updateCounter(): void {
+    this.counter.next(this.counter.value+1)
+  }
   //Http Client get method
   public getBoxState(id: Number): Observable<any> {
     const httpOptions = {

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { BoxService } from 'src/app/services/box-service/box.service';
-import { interval, Observable, Subscription, switchMap, timer } from 'rxjs';
+import { interval, Observable, Subscription, switchMap, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-box',
@@ -18,9 +18,30 @@ export class BoxComponent {
     //   this.backgroundColorStateBox = res.state;
     // });
 
-    this.subscription$ = interval(500)
-      .pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
-      .subscribe((res) => (this.backgroundColorStateBox = res.state));
+    // this.subscription$ = interval(500)
+    //   .pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
+    //   .subscribe((res) => {
+    //     this.backgroundColorStateBox = res.state;
+    //     this.boxService.updateCounter();
+    //     console.log(this.boxService.getCounter() + " counter num");
+
+    //   });
+
+      this.subscription$ = interval(500)
+      .pipe(take(26.8)).pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
+      .subscribe((res) => {
+          this.backgroundColorStateBox = res.state;
+          this.boxService.updateCounter();
+          console.log(this.boxService.getCounter() + " counter num");
+      })
+    // this.subscription$ = interval(500)
+    //   .pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
+    //   .subscribe((res) => {
+    //     this.backgroundColorStateBox = res.state;
+    //     this.boxService.updateCounter();
+    //     console.log(this.boxService.getCounter() + " counter num");
+
+    //   });
   }
 
   // Prevent memory leak

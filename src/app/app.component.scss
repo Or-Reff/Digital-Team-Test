@@ -4,3 +4,18 @@
   grid-template-rows: repeat(5, 1fr);
   grid-gap: 1rem;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 1rem;
+}
+
+.box {
+  background-color: lightgray;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
