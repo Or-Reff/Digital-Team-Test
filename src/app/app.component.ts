@@ -26,10 +26,9 @@ export class AppComponent {
     }
     /**Initiating */
     this.fetchData();
-    let counter = 0; // interval - every 0.5 seconds update UI
+    let counter = 1; // interval - every 0.5 seconds update UI
     this.subscription = interval(500).subscribe(() => {
-      if (counter === 3) {
-        //TODO change to 500 times
+      if (counter === 15) {
         this.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
