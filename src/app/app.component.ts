@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
-import { socket } from "socket.io-client";
+// import { Socket } from 'socket.io';
+import { Socket } from "ngx-socket-io";
 
 @Component({
   selector: 'app-root',

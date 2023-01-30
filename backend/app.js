@@ -4,10 +4,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const enumState = require("./enums/state.ts");
 const app = express();
+const http = require("http").createServer(app);
+
 const io = require("socket.io")(http);
 
 const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
+
+const port = process.env.PORT || 3000;
 
 mongoose.set("strictQuery", false);
 mongoose
@@ -69,6 +73,15 @@ app.get("/api/alldata", async (req, res) => {
     res.status(500).send(err);
   }
 });
+// Route to get all the data from the database
+app.get("/api/alldata", async (req, res) => {
+  try {
+    const data = await stateModel.updateMany();
+    res.send(data);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -97,10 +110,11 @@ io.on("connection", (socket) => {
     });
 
     // Emiting data real-time
-    io.emit('data', data);
+    io.emit("data", data);
     // Return data to the client
     res.json(data);
   });
 });
+http.listen(port, () => console.log(`listening on port ${port}`));
 
 module.exports = app;
