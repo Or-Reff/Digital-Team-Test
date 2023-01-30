@@ -73,14 +73,17 @@ app.get('/api/alldata', async (req, res) => {
 app.get("/api/data", async(req, res) => {
 
   const data = await stateModel.find();
+  console.log(data);
 
-  // Update data every 0.5 second
-  setInterval(() => {
+  //TODO update the mongoDB like previous method
+
+  // // Update data every 0.5 second
+  // setInterval(() => {
     data.forEach((item, index) => {
       data[index].state =
-        data[index].state === "KWS_KERIDOS" ? "KWS_KERIDOS_YG" : "KWS_KERIDOS";
+        data[index].state === "KWS_KERIDOS" ? "KWS_KERIDOS_YG" : "UNKNOWN";
     });
-  }, 500);
+  // }, 500);
 
   // Return data to the client
   res.json(data);

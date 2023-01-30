@@ -16,9 +16,9 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    let counter = 0;
+    let counter = 0;    // interval - every 0.5 seconds update UI
     this.subscription = interval(500).subscribe(() => {
-      if (counter === 6) {
+      if (counter === 15) { //TODO change to 500 times
         this.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
@@ -30,6 +30,7 @@ export class AppComponent {
         }));
       });
       console.log(counter);
+      console.log(this.data);
       counter++;
     });
   }
