@@ -16,22 +16,28 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    /**Initiating */
+    this.fetchData();
     let counter = 0;    // interval - every 0.5 seconds update UI
     this.subscription = interval(500).subscribe(() => {
-      if (counter === 15) { //TODO change to 500 times
+      if (counter === 3) { //TODO change to 500 times
         this.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
-      this.http.get('http://localhost:3000/api/data').subscribe((response: any) => {
-        this.data = response.map((item: any, index: any) => ({
-          id: index,
-          state: item.state,
-          color: this.getColor(item.state),
-        }));
-      });
+      this.fetchData();
       console.log(counter);
       console.log(this.data);
       counter++;
+    });
+  }
+  /**Fetching data to the UI*/
+  fetchData(){
+    // retrieve data from the API and update the UI
+    this.http.get('http://localhost:3000/api/data').subscribe((response: any) => {
+      this.data = response.map((item: any, index: any) => ({
+        id: index,
+        state: item.state,
+      }));
     });
   }
 

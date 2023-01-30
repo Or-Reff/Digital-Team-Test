@@ -61,7 +61,7 @@ app.get("/api/state", async (req, res, next) => {
 });
 
 // Route to get all the data from the database
-app.get('/api/alldata', async (req, res) => {
+app.get("/api/alldata", async (req, res) => {
   try {
     const data = await stateModel.find();
     res.send(data);
@@ -70,20 +70,29 @@ app.get('/api/alldata', async (req, res) => {
   }
 });
 
-app.get("/api/data", async(req, res) => {
-
+app.get("/api/data", async (req, res) => {
   const data = await stateModel.find();
-  console.log(data);
+  console.log(data[0].state);
+
+  // const keys = Object.keys(enumState);
+  // const bulkOps = data.map((item) => ({
+  //   updateOne: {
+  //     filter: { id: item.id },
+  //     update: { $set: { state: keys[Math.floor(Math.random() * keys.length)] } }
+  //   }
+  // }));
+
+  // await stateModel.bulkWrite(bulkOps);
+
 
   //TODO update the mongoDB like previous method
 
-  // // Update data every 0.5 second
-  // setInterval(() => {
-    data.forEach((item, index) => {
-      data[index].state =
-        data[index].state === "KWS_KERIDOS" ? "KWS_KERIDOS_YG" : "UNKNOWN";
-    });
-  // }, 500);
+  data.forEach((item, index) => {
+    console.log(
+      `enumstate: ${enumState[data[index].state] || enumState.ERROR}`
+    );
+    data[index].state = data[index].state || enumState.ERROR;
+  });
 
   // Return data to the client
   res.json(data);
