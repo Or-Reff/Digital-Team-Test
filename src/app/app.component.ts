@@ -2,14 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { first, interval, Subscription, switchMap, take } from 'rxjs';
 import { BoxService } from './services/box-service/box.service';
+import { DataView } from '../interfaces/data-view';
+import { initializeRes } from '../interfaces/initializeRes';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  data: Map<String, any> = new Map<String, any>();
-  dataView: Array<any> = [];
+  data: Map<String, DataView> = new Map<String, DataView>();
+  dataView: Array<DataView> = [];
   subscription!: Subscription;
 
   constructor(private http: HttpClient, public boxService: BoxService) {}
