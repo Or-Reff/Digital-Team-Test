@@ -38,7 +38,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 /**Cron schedule every 0.5 seconds to update the Database*/
 cron.schedule("*/" + "0,5 * * * * *", async function () {
-  console.log("Inside cron schedule");
   const docs = await stateModel.find();
 
   const promises = docs.map(async ({ _id, state }) => {

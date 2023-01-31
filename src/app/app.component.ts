@@ -17,8 +17,6 @@ export class AppComponent {
   ngOnInit() {
     if (this.boxService.isInitialCheckNeeded) {
       this.boxService.initializeDBdata().subscribe((response: any) => {
-        console.log('response1');
-        console.log(response);
         if (response.message !== 'Already initialized data') {
           response.forEach((element: any) => {
             this.boxService.data.set(element.index, element);
