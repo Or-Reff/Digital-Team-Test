@@ -39,9 +39,9 @@ export class AppComponent {
       }
       // retrieve data from the API and update the UI
       this.fetchData(counter);
-      console.log(counter);
-      console.log(this.data);
-      counter++;
+      // console.log(counter);
+      // console.log(this.data);
+      // counter++;
     });
   }
   /**Fetching data to the UI*/

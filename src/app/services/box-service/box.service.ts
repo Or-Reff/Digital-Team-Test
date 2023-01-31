@@ -34,7 +34,7 @@ export class BoxService {
   }
 
   /**Fetching data to the UI*/
-  fetchData(counter: Number) {
+  fetchData(counter: Number):Observable<any> {
     /**if it's the first time, fetch all 45 items
      * else fetch only the updated items
      */
@@ -45,7 +45,7 @@ export class BoxService {
       shouldFetchAll = false;
     }
     // retrieve data from the API and update the UI
-    this.http
+    return this.http
       .get('http://localhost:3000/api/fetchData', {
         params: {
           shouldFetchAll: shouldFetchAll,
