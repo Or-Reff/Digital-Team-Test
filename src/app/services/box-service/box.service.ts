@@ -10,7 +10,6 @@ export class BoxService {
   constructor(private http: HttpClient) {}
 
   counter = new BehaviorSubject<number>(1);
-  // public counter$ = this.counter.asObservable();
   data: Map<String, any> = new Map<String, any>();
   dataView: Array<any> = [];
   subscription!: Subscription;

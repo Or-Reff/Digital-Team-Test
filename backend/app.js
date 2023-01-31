@@ -60,12 +60,6 @@ cron.schedule("*/" + "0,5 * * * * *", async function () {
   });
 
   Promise.all([promises]);
-
-  // const bulk = stateModel.initializeUnorderdBulkOp();
-  // docs.forEach((doc) => {
-  //     bulk.find({_id:doc._id}).upsert().updateOne({ $set: {state: doc.state} });
-  // });
-  // await bulk.execute();
 });
 
 app.use("/api", statesRoute);
