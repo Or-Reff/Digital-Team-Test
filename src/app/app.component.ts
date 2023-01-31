@@ -17,19 +17,12 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    /** Check if the data is stored in localStorage
-     *  To maintain the state of the UI after disconnections
-     */
-    // const data = localStorage.getItem('data');
-    // if (data) {
-    //   this.data = JSON.parse(data);
-    // }
     let counter = 1; // interval - every 0.5 seconds update UI
     /**Initiating */
     this.fetchData(counter);
 
     this.subscription = interval(500).subscribe(() => {
-      if (counter === 15) {
+      if (counter === 500) {
         this.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
@@ -41,8 +34,11 @@ export class AppComponent {
   }
   /**Fetching data to the UI*/
   fetchData(counter: Number) {
+    /**if it's the first time, fetch all 45 items
+     * else fetch only the updated items
+    */
     let shouldFetchAll;
-    if (counter === 1) {
+    if (counter === 500) {
       shouldFetchAll = true;
     } else {
       shouldFetchAll = false;
@@ -65,7 +61,7 @@ export class AppComponent {
         this.dataView.sort((a, b) => {
           return a.id - b.id;
         });
-       
+
 
 
         // Store the data in localStorage
