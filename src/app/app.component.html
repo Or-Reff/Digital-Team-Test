@@ -1,8 +1,7 @@
 <div class="grid-container">
-  <app-box *ngFor="let item of this.boxService.dataView let i = index" [boxId]="item.index" [boxState]="item.state"></app-box>
+  <app-box *ngFor="let item of this.boxService.dataView; let i = index" [boxId]="item.index" [boxState]="item.state"></app-box>
 </div>
-<!-- <div>hi</div> -->
-<app-box [boxId]="1" boxState="KWS_KERIDOS"></app-box>
+<!-- <app-box [boxId]="1" boxState="KWS_KERIDOS"></app-box> -->
 
 <!-- <div class="grid-container" >
   <div *ngFor="let item of dataView; let i = index" class="box" [ngStyle]="{ backgroundColor: getColor(item.state) }">

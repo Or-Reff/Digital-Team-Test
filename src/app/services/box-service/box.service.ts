@@ -9,11 +9,12 @@ import { HttpHeaders } from '@angular/common/http';
 export class BoxService {
   constructor(private http: HttpClient) {}
 
-  counter = new BehaviorSubject<number>(0);
+  counter = new BehaviorSubject<number>(1);
   // public counter$ = this.counter.asObservable();
   data: Map<String, any> = new Map<String, any>();
   dataView: Array<any> = [];
   subscription!: Subscription;
+  public isInitialCheckNeeded: boolean = true;
 
   getCounter(): Number {
     return this.counter.value;
@@ -34,12 +35,12 @@ export class BoxService {
   }
 
   /**Fetching data to the UI*/
-  fetchData(counter: Number):Observable<any> {
+  fetchData():Observable<any> {
     /**if it's the first time, fetch all 45 items
      * else fetch only the updated items
      */
     let shouldFetchAll;
-    if (counter === 1) {
+    if (this.getCounter() === 1) {
       shouldFetchAll = true;
     } else {
       shouldFetchAll = false;
