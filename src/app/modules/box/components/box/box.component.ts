@@ -1,13 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { BoxService } from 'src/app/services/box-service/box.service';
-import {
-  interval,
-  Observable,
-  Subscription,
-  switchMap,
-  take,
-  timer,
-} from 'rxjs';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-box',
@@ -16,9 +9,9 @@ import {
 })
 export class BoxComponent {
   @Input() public boxId!: Number;
-  @Input() public boxState: String = 'ERROR'; //default value
+  @Input() public boxState!: String; //default value
   // backgroundColorStateBox: any;
-  subscription$!: Subscription;
+  // subscription!: Subscription;
   constructor(public boxService: BoxService) {}
 
   ngOnInit(): any {
@@ -30,11 +23,17 @@ export class BoxComponent {
     if (dataView) {
       this.boxService.dataView = JSON.parse(dataView);
     }
+    /**Initiating DB if empty*/
+    this.boxService.initializeDBdata().subscribe((response: any) => {
+      response.forEach((element: any) => {
+        this.boxService.data.set(element.index, element);
+      });
+    });
     /**Initiating UI*/
     this.boxService.fetchData(counter);
     // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
     this.boxService.subscription = interval(500).subscribe(() => {
-      if (counter === 500) {
+      if (counter === 5) {
         this.boxService.subscription.unsubscribe();
       }
       // retrieve data from the API and update the UI
@@ -63,17 +62,19 @@ export class BoxComponent {
         JSON.stringify(this.boxService.dataView)
       );
     });
-    // this.subscription$ = interval(500)
-    // .pipe(take(26.8)).pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
-    // .subscribe((res) => {
-    //     this.backgroundColorStateBox = res.state;
-    //     this.boxService.updateCounter();
-    //     console.log(this.boxService.getCounter() + " counter num");
-    // })
+    this.boxService.dataView = [...this.boxService.data.values()];
+    console.log(this.boxService.dataView);
+
+    this.boxService.dataView.sort((a, b) => {
+      return a.index - b.index;
+    });
+
+    // Store the data in localStorage
+    localStorage.setItem('dataView', JSON.stringify(this.boxService.dataView));
   }
 
   // Prevent memory leak
   ngOnDestroy() {
-    this.subscription$.unsubscribe();
+    this.boxService.subscription.unsubscribe();
   }
 }

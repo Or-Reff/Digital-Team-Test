@@ -50,22 +50,11 @@ export class BoxService {
         params: {
           shouldFetchAll: shouldFetchAll,
         },
-      })
-      // .subscribe((response: any) => {
-      //   response.forEach((element: any) => {
-      //     this.data.set(element.index, element);
-      //   });
+      });
+  }
 
-      //   this.dataView = [...this.data.values()];
-      //   console.log(this.dataView);
-
-      //   this.dataView.sort((a, b) => {
-      //     return a.index - b.index;
-      //   });
-
-      //   // Store the data in localStorage
-      //   localStorage.setItem('dataView', JSON.stringify(this.dataView));
-      // });
+  initializeDBdata():Observable<any>{
+    return this.http.get('http://localhost:3000/api/initializeData');
   }
 
   getColor(state: string) {
