@@ -1,1 +1,7 @@
-<p [ngStyle]="{'background-color': backgroundColorStateBox}">{{boxId}}</p>
+<p class="box"
+  [ngStyle]="{
+    'background-color': this.boxService.getColor(boxState.toString())
+  }"
+>
+  {{ boxId }}
+</p>

@@ -1,101 +1,57 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
-// import { LocalStorageService } from 'ngx-webstorage';
-
+import { first, interval, Subscription, switchMap, take } from 'rxjs';
+import { BoxService } from './services/box-service/box.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'Digital-Team-Test';
-  ids: Array<Number> = Array.from(Array(45).keys()); // creates 45 length array
-  data: any = [];
+  data: Map<String, any> = new Map<String, any>();
+  dataView: Array<any> = [];
   subscription!: Subscription;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public boxService: BoxService) {}
 
   ngOnInit() {
-    /** Check if the data is stored in localStorage
-     *  To maintain the state of the UI after disconnections
-     */
-    const data = localStorage.getItem('data');
-    if (data) {
-      this.data = JSON.parse(data);
+    if (this.boxService.isInitialCheckNeeded) {
+      this.boxService.initializeDBdata().subscribe((response: any) => {
+        if (response.message !== 'Already initialized data') {
+          response.forEach((element: any) => {
+            this.boxService.data.set(element.index, element);
+          });
+        }
+        this.boxService.isInitialCheckNeeded = false;
+      });
     }
-    /**Initiating */
-    this.fetchData();
-    let counter = 1; // interval - every 0.5 seconds update UI
-    this.subscription = interval(500).subscribe(() => {
-      if (counter === 15) {
-        this.subscription.unsubscribe();
-      }
-      // retrieve data from the API and update the UI
-      this.fetchData();
-      console.log(counter);
-      console.log(this.data);
-      counter++;
-    });
-  }
-  /**Fetching data to the UI*/
-  fetchData() {
-    // retrieve data from the API and update the UI
-    this.http
-      .get('http://localhost:3000/api/data')
-      .subscribe((response: any) => {
-        this.data = response.map((item: any, index: any) => ({
-          id: index,
-          state: item.state,
-        }));
+    /**Initiating UI*/
+    // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
+    this.boxService.subscription = interval(500)
+      .pipe(
+        take(500),
+        switchMap(() => this.boxService.fetchData())
+      )
+      .subscribe((response) => {
+        // retrieve data from the API and update the UI
+        response.forEach((element: any) => {
+          this.boxService.data.set(element.index, element);
+        });
+        this.boxService.dataView = [...this.boxService.data.values()];
+        this.boxService.dataView.sort((a, b) => {
+          return a.index - b.index;
+        });
+
         // Store the data in localStorage
-        localStorage.setItem('data', JSON.stringify(this.data));
+        localStorage.setItem(
+          'dataView',
+          JSON.stringify(this.boxService.dataView)
+        );
       });
   }
 
+  // Prevent memory leak
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-  // ngOnInit() {
-  //   this.fetchData();
-  // }
-
-  // fetchData() {
-  //   // Get data from the server every 0.5 seconds
-  //   interval(500)
-  //     .pipe(
-  //       switchMap(() =>
-  //         this.http.get('http://localhost:3000/api/data').pipe(
-  //           map((data: any) => {
-  //             // Map data to desired format
-  //             return data.map((item: { id: Number; state: string; }) => ({
-  //               id: item.id,
-  //               state: item.state,
-  //               color: this.getColor(item.state)
-  //             }));
-  //           }),
-  //           catchError(error => of(error))
-  //         )
-  //       )
-  //     )
-  //     .subscribe(data => {
-  //       // Update data in the component
-  //       this.data = data;
-  //     });
-  // }
-
-  getColor(state: string) {
-    switch (state) {
-      case 'KWS_KERIDOS':
-        return 'lightblue';
-      case 'KWS_KERIDOS_YG':
-        return 'orange';
-      case 'UNKNOWN':
-        return 'yellow';
-      case 'ERROR':
-        return 'grey';
-      default:
-        return 'lightgray';
-    }
+    this.boxService.subscription.unsubscribe();
   }
 }

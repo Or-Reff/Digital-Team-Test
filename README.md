@@ -1,27 +1,29 @@
-# DigitalTeamTest
+# Or Reff - Digital Team Assignment PassportCard
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.3.
 
-## Development server
+## Development server - Frontend - Angular
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `npm start` for a dev server in directory: {path}/src/app. Navigate to `http://localhost:4200/` , it auto refreshes.
 
-## Code scaffolding
+## Development server - Backend - Nodejs
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `npm run start:server` on the main directory to start backend with nodemon so it auto refreshes as well.
 
-## Build
+## MongoDB
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The Database is running on my MongoDB Atlas on an AWS Cloud Server
+i've kept my admin DB user in the code so you can use it while running.
+the DB i've structured is for an example:
+{
+_id: ObjectId('63d8e104cc31c8e1ce8b3acf')
+index:0
+state:"KWS_KERIDOS_YG"
+isUpdated:false
+_v:0
+createdAt:2023-01-31T09:36:04.829+00:00
+updatedAt:2023-01-31T15:58:03.675+00:00
+}
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Have a Great Day !
+## Or Reff 053-7172306.
