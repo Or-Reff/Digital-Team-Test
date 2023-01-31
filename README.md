@@ -1,6 +1,8 @@
 # Or Reff - Digital Team Assignment PassportCard
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.3.
+<br>
+And Node.js v18.13.0.
 
 ## Development server - Frontend - Angular
 
