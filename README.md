@@ -25,7 +25,8 @@ isUpdated:false<br>
 _v:0<br>
 createdAt:2023-01-31T09:36:04.829+00:00<br>
 updatedAt:2023-01-31T15:58:03.675+00:00<br>
-}
+}<br>
+isUpdated - after first portion of the data is sending only the items that have changed
 
 ## Have a Great Day !
 ## Or Reff 053-7172306.
