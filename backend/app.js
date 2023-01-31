@@ -39,7 +39,7 @@ app.get("/api/data", async (req, res) => {
     console.log(shouldFetchAll);
 
     const filter = {};
-    if(!req.shouldFetchAll) {
+    if(!shouldFetchAll) {
       filter.isUpdated = true;
     }
 
