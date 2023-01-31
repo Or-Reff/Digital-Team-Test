@@ -10,6 +10,8 @@ const { default: mongoose } = require("mongoose");
 
 const app = express();
 
+const enumStateHard = ["KWS_KERIDOS", "KWS_KERIDOS_YG", "UNKNOWN", "ERROR"];
+
 mongoose.set("strictQuery", false);
 mongoose
   .connect(
@@ -31,49 +33,46 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.post("/api/defaultBoxes",)
-
-app.get("/api/data", async (req, res) => {
+/**FetchData to the frontend UI */
+app.get("/api/fetchData", async (req, res) => {
   try {
     const shouldFetchAll = req.query.shouldFetchAll; // $_GET["shouldFetchAll"]
     console.log(shouldFetchAll);
 
     const filter = {};
-    if(!shouldFetchAll) {
+    if (!shouldFetchAll) {
       filter.isUpdated = true;
     }
-
-    res.status(200).send(await stateModel.find(filter).sort({id: 1}));
+    res.status(200).send(await stateModel.find(filter).sort({ id: 1 }));
   } catch (ERROR) {
-    res.sendStatus(400).json({ message: "cannot fetch data" });
+    res.sendStatus(400).json({ message: "Cannot fetch data" });
   }
 });
-
+/**Cron schedule every 0.5 seconds to update the Database*/
 cron.schedule("*/" + "0,5 * * * * *", async function () {
-  console.log("inside route");
-  const enumStateHard = ["KWS_KERIDOS", "KWS_KERIDOS_YG", "UNKNOWN", "ERROR"];
+  console.log("Inside cron schedule");
   const docs = await stateModel.find();
 
   const promises = docs.map(async ({ _id, state }) => {
     const newState =
-    enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+      enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
     return stateModel.updateOne(
       { _id },
-      { $set: {
-        state: newState,
-        isUpdated: newState != state
-       } },
+      {
+        $set: {
+          state: newState,
+          isUpdated: newState != state,
+        },
+      },
       {
         upsert: true,
         multi: false,
-        strict:false
+        strict: false,
       }
     );
   });
 
-  Promise.all([promises])
-
-
+  Promise.all([promises]);
 
   // const bulk = stateModel.initializeUnorderdBulkOp();
   // docs.forEach((doc) => {

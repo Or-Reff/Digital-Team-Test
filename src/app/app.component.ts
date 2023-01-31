@@ -17,10 +17,17 @@ export class AppComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    let counter = 1; // interval - every 0.5 seconds update UI
+    /** To maintain the state of the UI after disconnections
+     *  Check if the data is stored in localStorage
+     */
+    const dataView = localStorage.getItem('dataView');
+    if (dataView) {
+      this.dataView = JSON.parse(dataView);
+    }
+    let counter = 1;
     /**Initiating */
     this.fetchData(counter);
-
+    // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
     this.subscription = interval(500).subscribe(() => {
       if (counter === 500) {
         this.subscription.unsubscribe();
@@ -36,16 +43,16 @@ export class AppComponent {
   fetchData(counter: Number) {
     /**if it's the first time, fetch all 45 items
      * else fetch only the updated items
-    */
+     */
     let shouldFetchAll;
-    if (counter === 500) {
+    if (counter === 1) {
       shouldFetchAll = true;
     } else {
       shouldFetchAll = false;
     }
     // retrieve data from the API and update the UI
     this.http
-      .get('http://localhost:3000/api/data', {
+      .get('http://localhost:3000/api/fetchData', {
         params: {
           shouldFetchAll: shouldFetchAll,
         },
@@ -62,10 +69,8 @@ export class AppComponent {
           return a.id - b.id;
         });
 
-
-
         // Store the data in localStorage
-        localStorage.setItem('data', JSON.stringify(this.data));
+        localStorage.setItem('dataView', JSON.stringify(this.dataView));
       });
   }
 
