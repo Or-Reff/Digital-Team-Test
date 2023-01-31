@@ -5,13 +5,6 @@
   grid-gap: 1rem;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  grid-gap: 1rem;
-}
-
 .box {
   background-color: lightgray;
   height: 5rem;
@@ -23,7 +16,35 @@
 
 .header {
   display: flex;
-  font-family: "Dancing Script", cursive;
+  font-size: 3rem;
+  font-weight: bold;
   justify-content: center;
   align-items: center;
+  display: flex;
+  position: relative;
+  margin-bottom: 1rem;
+  }
+  .header::after{
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 0.20rem;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+a:hover::after,
+a:focus::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.footer{
+  display: flex;
+  background: url('../assets/PassportCardLabs-Footer-Cut.jpeg');
+  margin-top: 1rem;
+  height: 15rem;
 }

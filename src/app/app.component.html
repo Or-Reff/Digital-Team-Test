@@ -1,12 +1,7 @@
-<h1 class="header">Or Reff - Digital Team Assignment PassportCard</h1>
+<a class="header">Or Reff - Digital Team Assignment PassportCard</a>
 
 <div class="grid-container">
   <app-box *ngFor="let item of this.boxService.dataView; let i = index" [boxId]="item.index" [boxState]="item.state"></app-box>
 </div>
-<!-- <app-box [boxId]="1" boxState="KWS_KERIDOS"></app-box> -->
 
-<!-- <div class="grid-container" >
-  <div *ngFor="let item of dataView; let i = index" class="box" [ngStyle]="{ backgroundColor: getColor(item.state) }">
-    {{ item.index }}
-  </div>
-</div> -->
+<div class="footer"></div>
