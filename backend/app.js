@@ -38,15 +38,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/api/initializeData", async (req, res) => {
   try {
     const stateData = [];
-    console.log("statemodel.find:");
-    console.log(await stateModel.count);
     if ((await stateModel.countDocuments({})) === 0) {
       for (let i = 0; i < 45; i++) {
         const newState =
           enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
         stateData.push({ index: i, state: newState });
       }
-      console.log(stateData);
       stateModel.insertMany(stateData, (error, docs) => {
         if (error) {
           res.status(400).json({ message: "Cannot fetch data" });

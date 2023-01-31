@@ -9,7 +9,6 @@ import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'Digital-Team-Test';
   data: Map<String, any> = new Map<String, any>();
   dataView: Array<any> = [];
   subscription!: Subscription;
