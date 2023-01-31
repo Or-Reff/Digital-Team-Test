@@ -7,15 +7,14 @@ const cron = require("node-cron");
 
 const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
-const { timestamp } = require("rxjs");
 
 const app = express();
 
 const enumStateHard = ["KWS_KERIDOS", "KWS_KERIDOS_YG", "UNKNOWN", "ERROR"];
 
 mongoose.set("strictQuery", false);
-mongoose
-  .connect(
+mongoose //mongoDB Atlas
+  .connect( //should be hidden in ideal situation
     "mongodb+srv://orMongoAdmin:sGkkSwZgVXMMe3nq@cluster0.aftzbrv.mongodb.net/DigitalTeamTest"
   )
   .then(() => {

@@ -9,39 +9,20 @@ import { interval, Observable, Subscription, switchMap, take, timer } from 'rxjs
 })
 export class BoxComponent {
   @Input() public boxId!: Number;
-  backgroundColorStateBox: any;
+  @Input() public boxState: String = "ERROR"; //default value
+  // backgroundColorStateBox: any;
   subscription$!: Subscription;
-  constructor(private boxService: BoxService) {}
+  constructor(public boxService: BoxService) {}
 
   ngOnInit(): any {
-    // this.boxService.getBoxState(this.boxId).subscribe(res =>{
-    //   this.backgroundColorStateBox = res.state;
-    // });
 
-    // this.subscription$ = interval(500)
-    //   .pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
-    //   .subscribe((res) => {
-    //     this.backgroundColorStateBox = res.state;
-    //     this.boxService.updateCounter();
-    //     console.log(this.boxService.getCounter() + " counter num");
-
-    //   });
-
-      this.subscription$ = interval(500)
-      .pipe(take(26.8)).pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
-      .subscribe((res) => {
-          this.backgroundColorStateBox = res.state;
-          this.boxService.updateCounter();
-          console.log(this.boxService.getCounter() + " counter num");
-      })
-    // this.subscription$ = interval(500)
-    //   .pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
-    //   .subscribe((res) => {
-    //     this.backgroundColorStateBox = res.state;
-    //     this.boxService.updateCounter();
-    //     console.log(this.boxService.getCounter() + " counter num");
-
-    //   });
+      // this.subscription$ = interval(500)
+      // .pipe(take(26.8)).pipe(switchMap(() => this.boxService.getBoxState(this.boxId)))
+      // .subscribe((res) => {
+      //     this.backgroundColorStateBox = res.state;
+      //     this.boxService.updateCounter();
+      //     console.log(this.boxService.getCounter() + " counter num");
+      // })
   }
 
   // Prevent memory leak

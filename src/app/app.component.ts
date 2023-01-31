@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { interval, switchMap, map, catchError, of, Subscription } from 'rxjs';
-// import { LocalStorageService } from 'ngx-webstorage';
-
+import { interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,7 +22,15 @@ export class AppComponent {
       this.dataView = JSON.parse(dataView);
     }
     let counter = 1;
-    /**Initiating */
+    /**Initiating DB if empty*/
+    this.http
+      .get('http://localhost:3000/api/initializeData')
+      .subscribe((response: any) => {
+        response.forEach((element: any) => {
+          this.data.set(element.index, element);
+        });
+      });
+    /**Initiating UI*/
     this.fetchData(counter);
     // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
     this.subscription = interval(500).subscribe(() => {
