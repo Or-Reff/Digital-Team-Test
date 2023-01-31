@@ -7,6 +7,7 @@ const cron = require("node-cron");
 
 const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
+const { timestamp } = require("rxjs");
 
 const app = express();
 
@@ -33,6 +34,57 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+/**initializeData to mongoDB */
+app.get("/api/initializeData", async (req, res) => {
+  try {
+    const stateData = [];
+    console.log("statemodel.find:");
+    console.log(await stateModel.count);
+    if ((await stateModel.countDocuments({})) === 0) {
+      console.log("new fetch");
+      for (let i = 0; i < 45; i++) {
+        const newState =
+          enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+        stateData.push({ index: i, state: newState });
+      }
+      console.log(stateData);
+      stateModel.insertMany(stateData, (error, docs) => {
+        if (error) {
+          console.error(error);
+          res.status(400).json({ message: "Cannot fetch data" });
+        } else {
+          console.log(`Inserted ${docs.length} documents`);
+          res.status(200);
+        }
+      });
+    } else {
+      /**update fetch incase of updating model only*/
+      const newState =
+        enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+      stateData.push({ index: i, state: newState });
+      const promises = docs.map(async ({ _id, state }) => {
+        const newState =
+          enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+        return stateModel.updateOne(
+          { _id },
+          {
+            $set: {
+              state: newState,
+              isUpdated: newState != state,
+            },
+          },
+          {
+            upsert: true,
+            multi: false,
+            strict: false,
+          }
+        );
+      });
+
+      Promise.all([promises]);
+    }
+  } catch (ERROR) {}
+});
 /**FetchData to the frontend UI */
 app.get("/api/fetchData", async (req, res) => {
   try {

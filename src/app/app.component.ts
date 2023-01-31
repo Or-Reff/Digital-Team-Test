@@ -59,14 +59,14 @@ export class AppComponent {
       })
       .subscribe((response: any) => {
         response.forEach((element: any) => {
-          this.data.set(element.id, element);
+          this.data.set(element.index, element);
         });
 
         this.dataView = [...this.data.values()];
         console.log(this.dataView);
 
         this.dataView.sort((a, b) => {
-          return a.id - b.id;
+          return a.index - b.index;
         });
 
         // Store the data in localStorage

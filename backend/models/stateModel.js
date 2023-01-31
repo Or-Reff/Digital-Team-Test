@@ -2,23 +2,20 @@ const mongoose = require("mongoose");
 
 const stateModelSchema = mongoose.Schema(
   {
-    id: { type: Number, required: true, index: {unique:true}},
+    index: { type: Number, required: true, index: { unique: true } },
     state: {
       type: String,
       enum: ["KWS_KERIDOS", "KWS_KERIDOS_YG", "UNKNOWN", "ERROR"],
       default: "ERROR",
-      required: true
+      required: true,
     },
-  },
-  {
     isUpdated: {
       type: Boolean,
       default: false,
-      index:true
-    }
+      index: true,
+    },
   },
   { timestamps: true }
 );
 
-
-module.exports = mongoose.model("StateModel", stateModelSchema);
+module.exports = mongoose.model("StateModel1", stateModelSchema);

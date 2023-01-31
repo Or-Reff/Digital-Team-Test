@@ -1,9 +1,9 @@
 <!-- <div class="grid-container">
-  <app-box class="box" *ngFor="let id of ids" [boxId]="id"></app-box>
+  <app-box class="box" *ngFor="let item of dataView" [boxId]="id"></app-box>
 </div> -->
 
 <div class="grid-container" >
   <div *ngFor="let item of dataView; let i = index" class="box" [ngStyle]="{ backgroundColor: getColor(item.state) }">
-    {{ item.id }}
+    {{ item.index }}
   </div>
 </div>

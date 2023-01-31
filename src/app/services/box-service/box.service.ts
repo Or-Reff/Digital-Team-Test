@@ -19,14 +19,14 @@ export class BoxService {
     this.counter.next(this.counter.value+1)
   }
   //Http Client get method
-  public getBoxState(id: Number): Observable<any> {
+  public getBoxState(index: Number): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: 'my-auth-token',
       }),
     };
-    const url = `http://localhost:3000/api/state?id=${id}`;
+    const url = `http://localhost:3000/api/state?index=${index}`;
     return this.http.get<any>(url, httpOptions);
   }
 }
