@@ -3,7 +3,7 @@
 </div> -->
 
 <div class="grid-container" >
-  <div *ngFor="let item of data; let i = index" class="box" [ngStyle]="{ backgroundColor: getColor(item.state) }">
+  <div *ngFor="let item of dataView; let i = index" class="box" [ngStyle]="{ backgroundColor: getColor(item.state) }">
     {{ item.id }}
   </div>
 </div>
