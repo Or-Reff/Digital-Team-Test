@@ -11,4 +11,6 @@ router.get("/initializeData",statesController.initializeData)
 /**FetchData to the frontend UI */
 router.get("/fetchData",statesController.fetchData);
 
+
+
 module.exports = router;

@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { first, interval, Subscription, switchMap, take } from 'rxjs';
+import { Subscription, switchMap, take } from 'rxjs';
 import { BoxService } from './services/box-service/box.service';
 import { DataView } from '../interfaces/data-view';
-import { initializeRes } from '../interfaces/initializeRes';
+import { Socket } from 'ngx-socket-io';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,9 +15,29 @@ export class AppComponent {
   dataView: Array<DataView> = [];
   subscription!: Subscription;
 
-  constructor(private http: HttpClient, public boxService: BoxService) {}
+  constructor(private http: HttpClient, public boxService: BoxService , private socket: Socket) {}
 
   ngOnInit() {
+    this.socket.on('fetchData', (data:any) => {
+    // socket.io - every 0.5 seconds update UI //
+    this.boxService.fetchData().subscribe((response) => {
+      // retrieve data from the API and update the UI
+      response.forEach((element: any) => {
+        this.boxService.data.set(element.index, element);
+      });
+      this.boxService.dataView = [...this.boxService.data.values()];
+      this.boxService.dataView.sort((a, b) => {
+        return a.index - b.index;
+      });
+
+      // Store the data in localStorage
+      localStorage.setItem(
+        'dataView',
+        JSON.stringify(this.boxService.dataView)
+      );
+    });
+    });
+
     if (this.boxService.isInitialCheckNeeded) {
       this.boxService.initializeDBdata().subscribe((response: any) => {
         if (response.message !== 'Already initialized data') {
@@ -27,30 +48,11 @@ export class AppComponent {
         this.boxService.isInitialCheckNeeded = false;
       });
     }
-    /**Initiating UI*/
-    // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
-    this.boxService.subscription = interval(500)
-      .pipe(
-        take(500),
-        switchMap(() => this.boxService.fetchData())
-      )
-      .subscribe((response) => {
-        // retrieve data from the API and update the UI
-        response.forEach((element: any) => {
-          this.boxService.data.set(element.index, element);
-        });
-        this.boxService.dataView = [...this.boxService.data.values()];
-        this.boxService.dataView.sort((a, b) => {
-          return a.index - b.index;
-        });
-
-        // Store the data in localStorage
-        localStorage.setItem(
-          'dataView',
-          JSON.stringify(this.boxService.dataView)
-        );
-      });
   }
+
+  // fetchData(){
+  //   this.socket.emit('fetchData');
+  // }
 
   // Prevent memory leak
   ngOnDestroy() {

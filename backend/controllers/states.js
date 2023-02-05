@@ -1,4 +1,18 @@
+// States Controller
+// let io = require('socket.io')();
+// const socketModule = require('../server');
+// const io = socketModule.io;
+const http = require('http');
+// const Socket = require('socket.io');
+// const io = new Socket.Server(http, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
+// exports.io = io;
+
 const stateModel = require("../models/stateModel");
+
 exports.initializeData = async (req, res) => {
   try {
     const stateData = [];
@@ -12,18 +26,16 @@ exports.initializeData = async (req, res) => {
         if (error) {
           return res.status(400).json({ message: "Cannot fetch data" });
         } else {
-
           return res
             .status(200)
             .json({ message: `Inserted ${docs.length} documents` });
         }
       });
     } else {
-
       return res.status(200).json({ message: `Already initialized data` });
     }
   } catch (ERROR) {}
-}
+};
 
 exports.fetchData = async (req, res) => {
   try {
@@ -34,11 +46,29 @@ exports.fetchData = async (req, res) => {
       filter.isUpdated = true;
     }
 
-    return res.status(200).send(await stateModel.find(filter).sort({ id: 1 }));
+    const data = await stateModel.find(filter).sort({ id: 1 });
+    // io.emit('fetchData', data); // emit the data over socket.io
+    return res.status(200).send(data);
   } catch (error) {
-
     return res.sendStatus(400).json({ message: "Cannot fetch data" });
   }
-}
+};
 
+// exports.fetchData = async (req, res) => {
+//   try {
+//     const shouldFetchAll = req.query.shouldFetchAll; // $_GET["shouldFetchAll"]
 
+//     const filter = {};
+//     if (!shouldFetchAll) {
+//       filter.isUpdated = true;
+//     }
+
+//     return res.status(200).send(await stateModel.find(filter).sort({ id: 1 }));
+//   } catch (error) {
+//     return res.sendStatus(400).json({ message: "Cannot fetch data" });
+//   }
+// };
+
+// module.exports = {
+//   io,
+// };
