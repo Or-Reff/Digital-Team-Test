@@ -76,6 +76,22 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  socket.on("firstUiInitializeServer", async function(){
+    console.log('firstUiServer');
+    const docs = await stateModel.find();
+    const arrOfDocs = [];
+    const promises = docs.map(async ({ index, state }) => {
+      const newState =
+        enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+      arrOfDocs.push({
+        index: index,
+        state: newState,
+        isUpdated: newState != state,
+      });
+    });
+    socket.emit("firstUiInitializeClient", arrOfDocs);
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
@@ -92,11 +108,16 @@ server.listen(port);
 cron.schedule("*/" + "0,5 * * * * *", async function () {
   const docs = await stateModel.find();
   const arrOfDocs = [];
-
-  const promises = docs.map(async ({ _id, state }) => {
+  const promises = docs.map(async ({ _id, index, state }) => {
     const newState =
-    enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
-    arrOfDocs.push({_id:_id, state:newState , isUpdated: newState != state })
+      enumStateHard[Math.floor(Math.random() * enumStateHard.length)];
+    if (newState != state) {
+      arrOfDocs.push({
+        index: index,
+        state: newState,
+        isUpdated: newState != state,
+      });
+    }
     return stateModel.updateOne(
       { _id },
       {
@@ -115,6 +136,5 @@ cron.schedule("*/" + "0,5 * * * * *", async function () {
   Promise.all([promises]);
   io.emit("fetchData", arrOfDocs);
 });
-
 
 module.exports = app;

@@ -50,26 +50,26 @@ export class BoxService {
     //   //retrieve data from the API and update the UI
     //   this.socket.emit('fetchDataCheck')
     // }
-  /**Fetching data to the UI*/
-  fetchData():Observable<any> {
-    /**if it's the first time, fetch all 45 items
-     * else fetch only the updated items
-     */
-    let shouldFetchAll;
-    if (this.getCounter() === 1) {
-      shouldFetchAll = true;
-    } else {
-      shouldFetchAll = false;
-    }
+  // /**Fetching data to the UI*/
+  // fetchData():Observable<any> {
+  //   /**if it's the first time, fetch all 45 items
+  //    * else fetch only the updated items
+  //    */
+  //   let shouldFetchAll;
+  //   if (this.getCounter() === 1) {
+  //     shouldFetchAll = true;
+  //   } else {
+  //     shouldFetchAll = false;
+  //   }
 
-    //retrieve data from the API and update the UI
-    return this.http
-      .get('http://localhost:3000/api/fetchData', {
-        params: {
-          shouldFetchAll: shouldFetchAll,
-        },
-      });
-  }
+  //   //retrieve data from the API and update the UI
+  //   return this.http
+  //     .get('http://localhost:3000/api/fetchData', {
+  //       params: {
+  //         shouldFetchAll: shouldFetchAll,
+  //       },
+  //     });
+  // }
 
   initializeDBdata():Observable<any>{
     return this.http.get('http://localhost:3000/api/initializeData');

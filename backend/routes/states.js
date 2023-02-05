@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/initializeData",statesController.initializeData)
 
 /**FetchData to the frontend UI */
-router.get("/fetchData",statesController.fetchData);
+// router.get("/fetchData",statesController.fetchData);
 
 
 

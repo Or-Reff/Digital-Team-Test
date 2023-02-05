@@ -18,11 +18,29 @@ export class AppComponent {
   constructor(private http: HttpClient, public boxService: BoxService , private socket: Socket) {}
 
   ngOnInit() {
+    // Initialize UI
+    let counter = 1;
+    this.socket.emit('firstUiInitializeServer');
+    this.socket.on('firstUiInitializeClient' , (arrOfDocs:any)=>{
+      console.log('client');
+
+      arrOfDocs.forEach((element: any) => {
+        this.boxService.data.set(element.index, element);
+      });
+      this.boxService.dataView = [...this.boxService.data.values()];
+      this.boxService.dataView.sort((a, b) => {
+        return a.index - b.index;
+      });
+
+      // Store the data in localStorage
+      localStorage.setItem(
+        'dataView',
+        JSON.stringify(this.boxService.dataView)
+      );
+    })
     this.socket.on('fetchData', (data:any) => {
     // socket.io - every 0.5 seconds update UI //
-    this.boxService.fetchData().subscribe((response) => {
-      // retrieve data from the API and update the UI
-      response.forEach((element: any) => {
+    data.forEach((element: any) => {
         this.boxService.data.set(element.index, element);
       });
       this.boxService.dataView = [...this.boxService.data.values()];
@@ -36,7 +54,7 @@ export class AppComponent {
         JSON.stringify(this.boxService.dataView)
       );
     });
-    });
+
 
     if (this.boxService.isInitialCheckNeeded) {
       this.boxService.initializeDBdata().subscribe((response: any) => {
