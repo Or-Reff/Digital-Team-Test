@@ -6,7 +6,7 @@ And Node.js v18.13.0.
 
 ## Development server - Frontend - Angular
 
-Run `npm start` for a dev server in directory: {path}/src/app. Navigate to `http://localhost:4200/` , it auto refreshes.
+Run `npm start` for a dev server on the main directory. Navigate to `http://localhost:4200/` , it auto refreshes.
 
 ## Development server - Backend - Nodejs
 
