@@ -1,15 +1,4 @@
-// States Controller
-// let io = require('socket.io')();
-// const socketModule = require('../server');
-// const io = socketModule.io;
-const http = require('http');
-// const Socket = require('socket.io');
-// const io = new Socket.Server(http, {
-//   cors: {
-//     origin: "*",
-//   },
-// });
-// exports.io = io;
+const http = require("http");
 
 const stateModel = require("../models/stateModel");
 
@@ -36,20 +25,3 @@ exports.initializeData = async (req, res) => {
     }
   } catch (ERROR) {}
 };
-
-// exports.fetchData = async (req, res) => {
-//   try {
-//     const shouldFetchAll = req.query.shouldFetchAll; // $_GET["shouldFetchAll"]
-
-//     const filter = {};
-//     if (!shouldFetchAll) {
-//       filter.isUpdated = true;
-//     }
-
-//     const data = await stateModel.find(filter).sort({ id: 1 });
-//     return res.status(200).send(data);
-//   } catch (error) {
-//     return res.sendStatus(400).json({ message: "Cannot fetch data" });
-//   }
-// };
-

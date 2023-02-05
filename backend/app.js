@@ -14,14 +14,13 @@ const stateModel = require("./models/stateModel");
 const { default: mongoose } = require("mongoose");
 
 const statesRoute = require("./routes/states");
-// const { Socket } = require("socket.io");
 
 const enumStateHard = ["KWS_KERIDOS", "KWS_KERIDOS_YG", "UNKNOWN", "ERROR"];
 
 mongoose.set("strictQuery", false);
 mongoose //mongoDB Atlas
   .connect(
-    //should be hidden in ideal situation
+    //should be hidden in ideal situation but it's here for ease of use for the task right now.
     "mongodb+srv://orMongoAdmin:sGkkSwZgVXMMe3nq@cluster0.aftzbrv.mongodb.net/DigitalTeamTest"
   )
   .then(() => {
@@ -74,7 +73,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("Socket.io Connection Established.");
 
   socket.on("firstUiInitializeServer", async function(){
     const docs = await stateModel.find();
@@ -98,7 +97,7 @@ io.on("connection", (socket) => {
 
 const port = process.env.PORT || 3000;
 const onListening = () => {
-  console.log("listening on port:", port);
+  console.log("Listening on port:", port);
 };
 server.on("listening", onListening);
 server.listen(port);

@@ -35,23 +35,6 @@ export class BoxService {
   }
 
 
-    /**Fetching data to the UI*/
-    fetchData(arr:Array<any>):void {
-      arr.forEach((element: any) => {
-        this.data.set(element.index, element);
-      });
-      this.dataView = [...this.data.values()];
-      this.dataView.sort((a, b) => {
-        return a.index - b.index;
-      });
-
-      // Store the data in localStorage
-      localStorage.setItem(
-        'dataView',
-        JSON.stringify(this.dataView)
-      );
-        this.updateCounter();
-      }
 
 /**If DB is empty then fill the documents up to 45 */
   initializeDBdata():Observable<any>{
