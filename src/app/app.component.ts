@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { first, interval, Subscription, switchMap, take } from 'rxjs';
+import { Subscription, switchMap, take } from 'rxjs';
 import { BoxService } from './services/box-service/box.service';
 import { DataView } from '../interfaces/data-view';
-import { initializeRes } from '../interfaces/initializeRes';
+import { Socket } from 'ngx-socket-io';
+import { SocketService } from './services/socket-service/socket.service';
+import { DocumentUpdate } from 'src/interfaces/documentUpdate.interface';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,42 +17,31 @@ export class AppComponent {
   dataView: Array<DataView> = [];
   subscription!: Subscription;
 
-  constructor(private http: HttpClient, public boxService: BoxService) {}
+  constructor(private http: HttpClient, public boxService: BoxService , private socketService:SocketService , private socket: Socket) {}
 
   ngOnInit() {
+    // Initialize UI - fetch all 45 items for the first time.
+    this.socket.emit('firstUiInitializeServer');
+    this.socket.on('firstUiInitializeClient' , (arrOfDocs:Array<DocumentUpdate>)=>{
+      this.socketService.fetchData(arrOfDocs);
+    });
+
+    this.socket.on('fetchData', (data:Array<DocumentUpdate>) => {
+    // socket.io - every 0.5 seconds update UI //
+      this.socketService.fetchData(data);
+    });
+    // Checks if MongoDB should create 45 documents if empty DB
     if (this.boxService.isInitialCheckNeeded) {
       this.boxService.initializeDBdata().subscribe((response: any) => {
         if (response.message !== 'Already initialized data') {
-          response.forEach((element: any) => {
-            this.boxService.data.set(element.index, element);
+          response.forEach((element: DocumentUpdate) => {
+            this.boxService.data.set(element.index.toString(), element);
           });
         }
         this.boxService.isInitialCheckNeeded = false;
       });
     }
-    /**Initiating UI*/
-    // interval - every 0.5 seconds update UI // ideal to be with Web Socket instead, I know
-    this.boxService.subscription = interval(500)
-      .pipe(
-        take(500),
-        switchMap(() => this.boxService.fetchData())
-      )
-      .subscribe((response) => {
-        // retrieve data from the API and update the UI
-        response.forEach((element: any) => {
-          this.boxService.data.set(element.index, element);
-        });
-        this.boxService.dataView = [...this.boxService.data.values()];
-        this.boxService.dataView.sort((a, b) => {
-          return a.index - b.index;
-        });
 
-        // Store the data in localStorage
-        localStorage.setItem(
-          'dataView',
-          JSON.stringify(this.boxService.dataView)
-        );
-      });
   }
 
   // Prevent memory leak
