@@ -47,28 +47,9 @@ exports.initializeData = async (req, res) => {
 //     }
 
 //     const data = await stateModel.find(filter).sort({ id: 1 });
-//     // io.emit('fetchData', data); // emit the data over socket.io
 //     return res.status(200).send(data);
 //   } catch (error) {
 //     return res.sendStatus(400).json({ message: "Cannot fetch data" });
 //   }
 // };
 
-// exports.fetchData = async (req, res) => {
-//   try {
-//     const shouldFetchAll = req.query.shouldFetchAll; // $_GET["shouldFetchAll"]
-
-//     const filter = {};
-//     if (!shouldFetchAll) {
-//       filter.isUpdated = true;
-//     }
-
-//     return res.status(200).send(await stateModel.find(filter).sort({ id: 1 }));
-//   } catch (error) {
-//     return res.sendStatus(400).json({ message: "Cannot fetch data" });
-//   }
-// };
-
-// module.exports = {
-//   io,
-// };

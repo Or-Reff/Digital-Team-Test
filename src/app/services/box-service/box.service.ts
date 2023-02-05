@@ -10,7 +10,7 @@ import { Socket } from 'ngx-socket-io';
 export class BoxService {
   constructor(private http: HttpClient , private socket: Socket) {}
 
-  counter$ = new BehaviorSubject<number>(1);
+  counter$ = new BehaviorSubject<number>(0);
   data: Map<String, any> = new Map<String, any>();
   dataView: Array<any> = [];
   subscription!: Subscription;
@@ -35,42 +35,25 @@ export class BoxService {
   }
 
 
-    // /**Fetching data to the UI*/
-    // fetchData():Observable<any> {
-    //   /**if it's the first time, fetch all 45 items
-    //    * else fetch only the updated items
-    //    */
-    //   let shouldFetchAll;
-    //   if (this.getCounter() === 1) {
-    //     shouldFetchAll = true;
-    //   } else {
-    //     shouldFetchAll = false;
-    //   }
+    /**Fetching data to the UI*/
+    fetchData(arr:Array<any>):void {
+      arr.forEach((element: any) => {
+        this.data.set(element.index, element);
+      });
+      this.dataView = [...this.data.values()];
+      this.dataView.sort((a, b) => {
+        return a.index - b.index;
+      });
 
-    //   //retrieve data from the API and update the UI
-    //   this.socket.emit('fetchDataCheck')
-    // }
-  // /**Fetching data to the UI*/
-  // fetchData():Observable<any> {
-  //   /**if it's the first time, fetch all 45 items
-  //    * else fetch only the updated items
-  //    */
-  //   let shouldFetchAll;
-  //   if (this.getCounter() === 1) {
-  //     shouldFetchAll = true;
-  //   } else {
-  //     shouldFetchAll = false;
-  //   }
+      // Store the data in localStorage
+      localStorage.setItem(
+        'dataView',
+        JSON.stringify(this.dataView)
+      );
+        this.updateCounter();
+      }
 
-  //   //retrieve data from the API and update the UI
-  //   return this.http
-  //     .get('http://localhost:3000/api/fetchData', {
-  //       params: {
-  //         shouldFetchAll: shouldFetchAll,
-  //       },
-  //     });
-  // }
-
+/**If DB is empty then fill the documents up to 45 */
   initializeDBdata():Observable<any>{
     return this.http.get('http://localhost:3000/api/initializeData');
   }

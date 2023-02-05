@@ -18,44 +18,17 @@ export class AppComponent {
   constructor(private http: HttpClient, public boxService: BoxService , private socket: Socket) {}
 
   ngOnInit() {
-    // Initialize UI
-    let counter = 1;
+    // Initialize UI - fetch all 45 items for the first time.
     this.socket.emit('firstUiInitializeServer');
     this.socket.on('firstUiInitializeClient' , (arrOfDocs:any)=>{
-      console.log('client');
-
-      arrOfDocs.forEach((element: any) => {
-        this.boxService.data.set(element.index, element);
-      });
-      this.boxService.dataView = [...this.boxService.data.values()];
-      this.boxService.dataView.sort((a, b) => {
-        return a.index - b.index;
-      });
-
-      // Store the data in localStorage
-      localStorage.setItem(
-        'dataView',
-        JSON.stringify(this.boxService.dataView)
-      );
-    })
-    this.socket.on('fetchData', (data:any) => {
-    // socket.io - every 0.5 seconds update UI //
-    data.forEach((element: any) => {
-        this.boxService.data.set(element.index, element);
-      });
-      this.boxService.dataView = [...this.boxService.data.values()];
-      this.boxService.dataView.sort((a, b) => {
-        return a.index - b.index;
-      });
-
-      // Store the data in localStorage
-      localStorage.setItem(
-        'dataView',
-        JSON.stringify(this.boxService.dataView)
-      );
+      this.boxService.fetchData(arrOfDocs);
     });
 
-
+    this.socket.on('fetchData', (data:any) => {
+    // socket.io - every 0.5 seconds update UI //
+      this.boxService.fetchData(data);
+    });
+    // Checks if MongoDB should create 45 documents if empty DB
     if (this.boxService.isInitialCheckNeeded) {
       this.boxService.initializeDBdata().subscribe((response: any) => {
         if (response.message !== 'Already initialized data') {

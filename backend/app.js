@@ -77,7 +77,6 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("firstUiInitializeServer", async function(){
-    console.log('firstUiServer');
     const docs = await stateModel.find();
     const arrOfDocs = [];
     const promises = docs.map(async ({ index, state }) => {
